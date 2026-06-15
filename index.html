@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Pac-Man" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>Pac-Man</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <canvas id="game-canvas" aria-label="NES game screen"></canvas>
+
+    <section id="setup" class="panel hidden">
+      <h1>Pac-Man</h1>
+      <p id="setup-text">Import your NES ROM once. It will be kept privately in this web app’s local storage.</p>
+      <input id="rom-input" type="file" accept=".nes,application/octet-stream" hidden />
+      <button id="import-rom">Import ROM</button>
+    </section>
+
+    <button id="start-overlay" class="overlay hidden" aria-label="Tap to start">
+      Tap to start<br /><span>Swipe to move</span>
+    </button>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <button id="hidden-menu-zone" aria-label="Hidden menu"></button>
+
+    <section id="menu" class="panel hidden">
+      <h2>Hidden menu</h2>
+      <button id="save-now">Save now</button>
+      <button id="export-save">Export save</button>
+      <button id="import-save">Import save</button>
+      <button id="replace-rom">Replace ROM</button>
+      <button id="delete-data" class="danger">Delete ROM + save</button>
+      <button id="close-menu">Close</button>
+      <input id="save-input" type="file" accept=".state,.bin,application/octet-stream" hidden />
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
