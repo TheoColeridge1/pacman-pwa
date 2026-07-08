@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pacman-pwa-v2';
+const CACHE_NAME = 'pacman-pwa-v1';
 const APP_SHELL = [
   './',
   './index.html',
