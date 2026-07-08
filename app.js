@@ -108,16 +108,19 @@ async function launchGame() {
       zIndex: '1'
     },
     retroarchConfig: {
-      input_overlay_enable: false,
-      menu_show_core_updater: false,
-      savestate_thumbnail_enable: false,
-      video_smooth: false
+  input_overlay_enable: false,
+  menu_show_core_updater: false,
+  savestate_thumbnail_enable: false,
+  video_smooth: false,
+  fastforward_ratio: 2.0
+}
     }
   });
 
   started = true;
-  showToast(savedState ? 'Save loaded' : 'Ready');
-  setInterval(saveState, 15000);
+startAutomaticSpeedFix();
+showToast(savedState ? 'Save loaded' : 'Ready');
+setInterval(saveState, 15000);
 }
 
 async function holdDirection(direction) {
@@ -205,7 +208,66 @@ function setupHiddenMenu() {
     setTimeout(() => location.reload(), 700);
   });
 }
+let speedFixOn = false;
+let speedMonitorStarted = false;
 
+function measureFrameRate(duration = 2000) {
+  return new Promise((resolve) => {
+    let frames = 0;
+    let startTime = null;
+
+    function countFrame(time) {
+      if (startTime === null) {
+        startTime = time;
+      }
+
+      frames += 1;
+
+      const elapsed = time - startTime;
+
+      if (elapsed >= duration) {
+        const fps = (frames * 1000) / elapsed;
+        resolve(fps);
+        return;
+      }
+
+      requestAnimationFrame(countFrame);
+    }
+
+    requestAnimationFrame(countFrame);
+  });
+}
+
+async function checkGameSpeed() {
+  if (!nostalgist || document.visibilityState !== 'visible') {
+    return;
+  }
+
+  const fps = await measureFrameRate();
+
+  if (fps >= 24 && fps <= 40 && !speedFixOn) {
+    nostalgist.sendCommand('FAST_FORWARD');
+    speedFixOn = true;
+    showToast('Low Power speed fix on');
+  }
+
+  if (fps >= 50 && speedFixOn) {
+    nostalgist.sendCommand('FAST_FORWARD');
+    speedFixOn = false;
+    showToast('Normal speed restored');
+  }
+}
+
+function startAutomaticSpeedFix() {
+  if (speedMonitorStarted) {
+    return;
+  }
+
+  speedMonitorStarted = true;
+
+  setTimeout(checkGameSpeed, 4000);
+  setInterval(checkGameSpeed, 10000);
+}
 importRomButton.addEventListener('click', () => romInput.click());
 romInput.addEventListener('change', async () => {
   const file = romInput.files?.[0];
