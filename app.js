@@ -113,7 +113,7 @@ async function launchGame() {
   savestate_thumbnail_enable: false,
   video_smooth: false,
   fastforward_ratio: 2.0
-    }
+}
   });
 
   started = true;
